@@ -1,0 +1,138 @@
+<script lang="ts">
+    import { onMount } from "svelte";
+
+    export let speed: number;
+    export let spinSpeed: number;
+    export let emblemSrc:string ;
+    export let emblemSize: number;
+    export let bgSrc: string;
+    let Height;
+    let Width;
+
+    let y = 1
+    let x = 1
+
+    let padding = 0
+
+    let directionY = true
+    let directionX = true
+
+    let boundX = 0
+    let boundY = 0
+
+    let offsetHeight;
+    let offsetWidth;
+
+    let renderBox: any;
+    let dvd: any;
+
+    onMount(() => {
+        //Setting up render event
+        setInterval(() => {
+            render()
+        }, (10));
+    })
+
+    function render(){
+        //Setting up bounds for collision.
+        boundX = renderBox.offsetWidth - dvd.offsetWidth - padding
+        boundY = renderBox.offsetHeight - dvd.offsetHeight - padding
+        Height = dvd.offsetHeight
+        Width = dvd.offsetWidth
+
+        //Colliding on Y axis.
+        if(y >= boundY && directionY){
+            onCollide("Y")
+        }
+        else if(y < padding && !directionY){
+            onCollide("Y")
+        }
+
+        //Colliding on X axis.
+        if(x >= boundX && directionX){
+            onCollide("X")
+        }
+        else if(x < padding && !directionX){
+            onCollide("X")
+        }
+
+        //Setting up the speed and direction of X axis
+        if(directionX){
+            x = x + 1 * speed 
+        }else{
+            x = x + 1 * speed * (-1)
+        }
+
+        //Setting up the speed and direction of Y axis
+        if(directionY){
+            y = y + 1 * speed
+        }else{
+            y = y + 1 * speed * (-1)
+        }
+
+        //Setting up logo position on the axis
+        dvd.style.left = `${x}px`
+        dvd.style.top = `${y}px`
+    }
+
+    //Change direction whenever the box collide
+    function onCollide(axis: string){
+        switch(axis){
+            case "Y":
+                directionY = !directionY
+                break;
+            case "X":
+                directionX = !directionX
+                break;
+        }
+    }
+    const getSpinSpeed = (speed: number, size: number) => {
+        let s = speed == 0 ? "0":((1/speed)*10)
+        return `animation: emblemSpin ${s}s linear infinite; width: ${size}px;`
+    }
+    $: spinStyle = getSpinSpeed(spinSpeed, emblemSize)
+</script>
+
+    <div id="renderBox" bind:offsetHeight bind:offsetWidth style="background-image: url({bgSrc})" bind:this={renderBox}>
+        <div id="dvd" bind:offsetHeight bind:offsetWidth bind:this={dvd}>
+            <img style={spinStyle} src={emblemSrc} alt="emblem">
+        </div>
+        <p class="watermark text-white text-2xl opacity-80 mr-4 mb-2">made with dvd.nangurepo.com</p>
+    </div>
+
+<style>
+    @keyframes emblemSpin {
+        from {
+            transform:rotate(0deg);
+        }
+        to {
+            transform:rotate(360deg);
+        }
+    }
+    #renderBox{
+        background-size: 100% 100%;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        marginBottom: 0;
+        position: absolute;
+        z-index: 1;
+    }
+    .watermark{
+        position: fixed;
+        bottom: 0;
+        right: 0;        
+        user-select: none; /* Non-prefixed version for chorme, opera and*/
+        -ms-user-select: none; /* Internet Explorer, Edge */
+        -moz-user-select: none; /* Firefox */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+    }
+    #dvd{
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+</style>
