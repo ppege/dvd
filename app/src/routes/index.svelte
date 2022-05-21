@@ -9,10 +9,10 @@
 <script lang="ts">
     import Spin from "../components/Spin.svelte"
     import Fa from 'svelte-fa/src/fa.svelte'
-    import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
-    import { fly, fade } from 'svelte/transition'
+    import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
+    import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
+    import { fly } from 'svelte/transition'
 
-    $: matchSpeeds = false;
     $: travelSpeed = 4
     $: spinSpeed = 2;
     let visible = false;
