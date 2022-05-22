@@ -4,6 +4,7 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
 import { fly } from 'svelte/transition'
 import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg } from '../components/stores'
+import { browser } from '$app/env';
 let visible = false;
 </script>
 
@@ -69,7 +70,7 @@ let visible = false;
     </div>
     </div>
     {/if}
-    {#if !visible}
+    {#if !visible && browser}
     <button class="w-10 h-10 py-1 px-2 z-50 bg-black/50 {visible?"opacity-100 hover:bg-black":"opacity-20"} hover:opacity-100 absolute" on:mouseover={()=>visible=true} on:focus={()=>visible=true} on:click={()=>{visible=true}}>
         <Fa icon={faAngleDown} size="2x" class="text-white"/>
     </button>

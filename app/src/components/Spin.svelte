@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { browser } from '$app/env';
 
     export let speed: any;
     export let spinSpeed: any;
@@ -93,7 +94,9 @@
         <div id="dvd" bind:offsetHeight bind:offsetWidth bind:this={dvd}>
             <img style={spinStyle} src={emblemSrc} alt="emblem">
         </div>
+        {#if browser}
         <p class="watermark text-white text-2xl opacity-80 mr-2 mb-2 bg-black/25 px-2 rounded">made with dvd.nangurepo.com</p>
+        {/if}
         <div class="animate-spin"/>
     </div>
 
