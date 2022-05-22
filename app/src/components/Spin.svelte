@@ -88,6 +88,31 @@
         return `animation: spin ${s}s linear infinite; width: ${size}px;`
     }
     $: spinStyle = getSpinSpeed(spinSpeed, emblemSize)
+    const getWatermark = () => {
+        const verbs = [
+            "made",
+            "built",
+            "created",
+            "designed",
+            "crafted",
+            "developed",
+            "produced",
+            "forged",
+            "brought into existence"
+        ]
+        const prepositions = [
+            "using",
+            "with",
+            "at"
+        ]
+        const emojis = [
+            "💎",
+            "💯",
+            "🐐"
+        ]
+        const prefix = verbs[Math.floor(Math.random()*verbs.length)] + " " + prepositions[Math.floor(Math.random()*prepositions.length)];
+        return prefix + " dvd.nangurepo.com " + emojis[Math.floor(Math.random()*emojis.length)]
+    }
 </script>
 
     <div id="renderBox" bind:offsetHeight bind:offsetWidth style="background-image: url({bgSrc})" bind:this={renderBox}>
@@ -95,7 +120,7 @@
             <img style={spinStyle} src={emblemSrc} alt="emblem">
         </div>
         {#if browser}
-        <p class="watermark text-white text-2xl opacity-80 mr-2 mb-2 bg-black/25 px-2 rounded">made with dvd.nangurepo.com</p>
+        <p class="watermark text-white self-center text-xl md:text-2xl opacity-80 mr-2 mb-2 bg-black/25 px-2 rounded">{getWatermark()}</p>
         {/if}
         <div class="animate-spin"/>
     </div>

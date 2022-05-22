@@ -9,8 +9,8 @@ const getItem = (item: string, fallback: string|number) => {
     }
 }
 
-export const defaultEmblem = browser?"https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Coat_of_Arms_of_Spain.svg/928px-Coat_of_Arms_of_Spain.svg.png":"https://color-hex.org/colors/ffffff.png";
-export const defaultBg = browser?"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Simplified_Flag_of_Spain_%28civil_variant%29.svg/2560px-Simplified_Flag_of_Spain_%28civil_variant%29.svg.png":"https://color-hex.org/colors/ffffff.png";
+export const defaultEmblem = browser?"/emblem.png":"https://color-hex.org/colors/ffffff.png";
+export const defaultBg = browser?"/bg.png":"https://color-hex.org/colors/ffffff.png";
 
 export const travelSpeed = getItem("travelSpeed", 4);
 export const spinSpeed = getItem("spinSpeed", 2);
