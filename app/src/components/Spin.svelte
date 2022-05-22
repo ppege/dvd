@@ -1,13 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    export let speed: number;
-    export let spinSpeed: number;
-    export let emblemSrc:string ;
-    export let emblemSize: number;
-    export let bgSrc: string;
-    let Height;
-    let Width;
+    export let speed: any;
+    export let spinSpeed: any;
+    export let emblemSize: any;
+    export let emblemSrc: any;
+    export let bgSrc: any;
 
     let y = 1
     let x = 1
@@ -37,8 +35,6 @@
         //Setting up bounds for collision.
         boundX = renderBox.offsetWidth - dvd.offsetWidth - padding
         boundY = renderBox.offsetHeight - dvd.offsetHeight - padding
-        Height = dvd.offsetHeight
-        Width = dvd.offsetWidth
 
         //Colliding on Y axis.
         if(y >= boundY && directionY){
@@ -88,7 +84,7 @@
     }
     const getSpinSpeed = (speed: number, size: number) => {
         let s = speed == 0 ? "0":((1/speed)*10)
-        return `animation: emblemSpin ${s}s linear infinite; width: ${size}px;`
+        return `animation: spin ${s}s linear infinite; width: ${size}px;`
     }
     $: spinStyle = getSpinSpeed(spinSpeed, emblemSize)
 </script>
@@ -97,25 +93,18 @@
         <div id="dvd" bind:offsetHeight bind:offsetWidth bind:this={dvd}>
             <img style={spinStyle} src={emblemSrc} alt="emblem">
         </div>
-        <p class="watermark text-white text-2xl opacity-80 mr-4 mb-2">made with dvd.nangurepo.com</p>
+        <p class="watermark text-white text-2xl opacity-80 mr-2 mb-2 bg-black/25 px-2 rounded">made with dvd.nangurepo.com</p>
+        <div class="animate-spin"/>
     </div>
 
 <style>
-    @keyframes emblemSpin {
-        from {
-            transform:rotate(0deg);
-        }
-        to {
-            transform:rotate(360deg);
-        }
-    }
     #renderBox{
         background-size: 100% 100%;
         width: 100%;
         height: 100%;
         top: 0;
         left: 0;
-        marginBottom: 0;
+        margin-bottom: 0;
         position: absolute;
         z-index: 1;
     }
