@@ -1,11 +1,35 @@
 <script>
-import Fa from 'svelte-fa/src/fa.svelte'
-import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
-import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
-import { fly } from 'svelte/transition'
-import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg } from '../components/stores'
-import { browser } from '$app/env';
-let visible = false;
+    import { browser } from '$app/env';
+    import axios from 'axios';
+    import Fa from 'svelte-fa/src/fa.svelte'
+    import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
+    import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
+    import { fly } from 'svelte/transition'
+    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg } from '../components/stores'
+    let visible = true;
+    let shareCode = "None"
+    const generateShareCode = () => {
+        axios.get(`https://api.nangurepo.com/v2/dvd?data=${JSON.stringify(localStorage)}`)
+        .then((response) => {
+            shareCode = response.data
+        })
+        .catch(() => {
+            shareCode = "Error!"
+        })
+    }
+    const loadShareCode = () => {
+        axios.get(`https://api.nangurepo.com/v2/dvd?code=${shareCode}`)
+        .then((response) => {
+            $travelSpeed = response.data.travelSpeed
+            $spinSpeed = response.data.spinSpeed
+            $emblemSrc = response.data.emblemSrc
+            $emblemSize = response.data.emblemSize
+            $bgSrc = response.data.bgSrc
+        })
+        .catch(() => {
+            shareCode = "Error!"
+        })
+    }
 </script>
 
 <div class="flex flex-col">
@@ -68,6 +92,20 @@ let visible = false;
             }}>
                 <p>Reset All</p>
             </button>
+        </div>
+        <div class="flex flex-col">
+            <div class="flex flex-col px-2 py-2 text-white items-center">
+                <p>Share Code</p>
+                <input class="font-mono bg-black/25 py-1 w-32" type=text bind:value={shareCode}>
+                <div class="flex flex-row">
+                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1" on:click={generateShareCode}>
+                        <p>Generate</p>
+                    </button>
+                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1" on:click={loadShareCode}>
+                        <p>Load</p>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
     <button class="w-10 h-10 py-1 px-2 bg-black/50 {visible?"opacity-100 hover:bg-black":"opacity-20"} hover:opacity-100 rounded-br-2xl" on:click={()=>visible=false}>
