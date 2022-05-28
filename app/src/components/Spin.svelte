@@ -7,6 +7,7 @@
     export let emblemSize: any;
     export let emblemSrc: any;
     export let bgSrc: any;
+    export let colorMode: any;
 
     let y = 1
     let x = 1
