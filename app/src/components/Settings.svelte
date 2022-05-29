@@ -5,7 +5,7 @@
     import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
     import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
     import { fly } from 'svelte/transition'
-    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, colorMode } from '../components/stores'
+    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, invertMode } from '../components/stores'
     let visible = true;
     let shareCode = "None"
     const generateShareCode = () => {
@@ -25,7 +25,7 @@
             $emblemSrc = response.data.emblemSrc || defaultEmblem
             $emblemSize = response.data.emblemSize || "320"
             $bgSrc = response.data.bgSrc || defaultBg
-            $colorMode = response.data.colorMode || false
+            $invertMode = response.data.invertMode || false
         })
         .catch(() => {
             shareCode = "Error!"
@@ -59,9 +59,9 @@
                     <input type=range bind:value={$emblemSize} min=128 max=1024>
                 </div>
             </div>
-            <div class="flex flex-row px-2 py-2 text-white">
-                <input type=checkbox bind:checked={$colorMode} class="mr-2">
-                <p>Color mode</p>
+            <div class="flex flex-row px-2 py-2 text-white items-center">
+                <input type=checkbox bind:checked={$invertMode} class="mr-2">
+                <p>Invert Mode</p>
             </div>
         </div>
         <div class="flex flex-col">
@@ -84,6 +84,7 @@
                     $travelSpeed = 4;
                     $spinSpeed = 3;
                     $emblemSize = 320;
+                    $invertMode = false;
                 }}>
                     <p>Reset Settings</p>
                 </button>
@@ -94,6 +95,7 @@
                 $travelSpeed = 4;
                 $spinSpeed = 3;
                 $emblemSize = 320;
+                $invertMode = false;
             }}>
                 <p>Reset All</p>
             </button>

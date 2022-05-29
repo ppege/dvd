@@ -1,12 +1,16 @@
 import { writable } from 'svelte/store'
 import { browser } from '$app/env';
 
-const getItem = (item: string, fallback: string|number|boolean) => {
+const getItem = (item: string, fallback: string|number) => {
     try {
-        if (typeof fallback === 'boolean') {
-            return writable((localStorage.getItem(item) === 'true') || fallback)
-        }
         return writable(localStorage.getItem(item) || fallback);
+    } catch {
+        return writable(fallback);
+    }
+}
+const getBool = (item: string, fallback: boolean) => {
+    try {
+        return writable((localStorage.getItem(item) === 'true') || fallback);
     } catch {
         return writable(fallback);
     }
@@ -19,7 +23,7 @@ export const spinSpeed = getItem("spinSpeed", 2);
 export const emblemSrc = getItem("emblemSrc", defaultEmblem);
 export const emblemSize = getItem("emblemSize", 320);
 export const bgSrc = getItem("bgSrc", defaultBg);
-export const colorMode = getItem("colorMode", false);
+export const invertMode = getBool("invertMode", false);
 
 travelSpeed.subscribe(value => {
     if (browser) {
@@ -46,8 +50,8 @@ bgSrc.subscribe(value => {
         localStorage.setItem('bgSrc', value.toString())
     }
 })
-colorMode.subscribe(value => {
+invertMode.subscribe(value => {
     if (browser) {
-        localStorage.setItem('colorMode', value.toString())
+        localStorage.setItem('invertMode', value.toString())
     }
 })
