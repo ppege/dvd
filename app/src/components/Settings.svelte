@@ -6,8 +6,9 @@
     import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
     import { fly } from 'svelte/transition'
     import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, invertMode } from '../components/stores'
+    import { page } from '$app/stores'
     let visible = false;
-    let shareCode = "None"
+    let shareCode = $page.url.searchParams.get('sharecode') || "None";
     const generateShareCode = () => {
         axios.get(`https://api.nangurepo.com/v2/dvd?data=${JSON.stringify(localStorage)}`)
         .then((response) => {
@@ -30,6 +31,9 @@
         .catch(() => {
             shareCode = "Error!"
         })
+    }
+    if (shareCode !== "None") {
+        loadShareCode();
     }
 </script>
 
