@@ -7,6 +7,7 @@
     export let emblemSize: any;
     export let emblemSrc: any;
     export let bgSrc: any;
+    export let invertMode: any;
 
     let y = 1
     let x = 1
@@ -24,6 +25,7 @@
 
     let renderBox: any;
     let dvd: any;
+    let collisionIndex: number = 0;
 
     onMount(() => {
         //Setting up render event
@@ -39,18 +41,18 @@
 
         //Colliding on Y axis.
         if(y >= boundY && directionY){
-            onCollide("Y")
+            onCollide("Y", dvd)
         }
         else if(y < padding && !directionY){
-            onCollide("Y")
+            onCollide("Y", dvd)
         }
 
         //Colliding on X axis.
         if(x >= boundX && directionX){
-            onCollide("X")
+            onCollide("X", dvd)
         }
         else if(x < padding && !directionX){
-            onCollide("X")
+            onCollide("X", dvd)
         }
 
         //Setting up the speed and direction of X axis
@@ -73,7 +75,7 @@
     }
 
     //Change direction whenever the box collide
-    function onCollide(axis: string){
+    function onCollide(axis: string, dvd: any){
         switch(axis){
             case "Y":
                 directionY = !directionY
@@ -81,6 +83,16 @@
             case "X":
                 directionX = !directionX
                 break;
+            }
+        if (invertMode) {
+            if (collisionIndex % 2 === 0) {
+                dvd.style.filter = "invert(100%)";
+            } else {
+                dvd.style.filter = "invert(0%)";
+            }
+            collisionIndex++;
+        } else {
+            dvd.style.filter = "invert(0%)";
         }
     }
     const getSpinSpeed = (speed: number, size: number) => {
@@ -106,7 +118,6 @@
             "at"
         ]
         const emojis = [
-            "💎",
             "💯",
             "🐐"
         ]

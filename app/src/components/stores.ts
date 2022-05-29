@@ -8,15 +8,22 @@ const getItem = (item: string, fallback: string|number) => {
         return writable(fallback);
     }
 }
+const getBool = (item: string, fallback: boolean) => {
+    try {
+        return writable((localStorage.getItem(item) === 'true') || fallback);
+    } catch {
+        return writable(fallback);
+    }
+}
 
 export const defaultEmblem = browser?"/emblem.png":"https://color-hex.org/colors/ffffff.png";
 export const defaultBg = browser?"/bg.png":"https://color-hex.org/colors/ffffff.png";
-
 export const travelSpeed = getItem("travelSpeed", 4);
 export const spinSpeed = getItem("spinSpeed", 2);
 export const emblemSrc = getItem("emblemSrc", defaultEmblem);
 export const emblemSize = getItem("emblemSize", 320);
 export const bgSrc = getItem("bgSrc", defaultBg);
+export const invertMode = getBool("invertMode", false);
 
 travelSpeed.subscribe(value => {
     if (browser) {
@@ -41,5 +48,10 @@ emblemSize.subscribe(value => {
 bgSrc.subscribe(value => {
     if (browser) {
         localStorage.setItem('bgSrc', value.toString())
+    }
+})
+invertMode.subscribe(value => {
+    if (browser) {
+        localStorage.setItem('invertMode', value.toString())
     }
 })
