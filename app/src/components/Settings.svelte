@@ -1,14 +1,28 @@
-<script>
-    import { browser } from '$app/env';
+<script lang="ts">
+    import { browser, mode } from '$app/env';
     import axios from 'axios';
     import Fa from 'svelte-fa/src/fa.svelte'
     import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
     import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
     import { fly } from 'svelte/transition'
-    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, invertMode } from '../components/stores'
+    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, invertMode, previewMode } from '../components/stores'
     import { page } from '$app/stores'
+    const getItem = (item: string, fallback: string|number) => {
+        try {
+            return localStorage.getItem(item) || fallback;
+        } catch {
+            return fallback;
+        }
+    }
+    const getBool = (item: string, fallback: boolean) => {
+        try {
+            return (localStorage.getItem(item) === 'true') || fallback;
+        } catch {
+            return fallback;
+        }
+    }
     let visible = false;
-    let shareCode = $page.url.hash.replace('#', '') || "None";
+    let shareCode: string = "";
     const generateShareCode = () => {
         axios.get(`https://api.nangurepo.com/v2/dvd?data=${JSON.stringify(localStorage)}`)
         .then((response) => {
@@ -32,7 +46,31 @@
             shareCode = "Error!"
         })
     }
-    if (shareCode !== "None") {
+    const previewShareCode = () => {
+        $previewMode = true;
+        loadShareCode();
+    }
+    let copyText = "Copy link";
+    const copyShareCode = () => {
+        navigator.clipboard.writeText("https://dvd.nangurepo.com/#" + shareCode);
+        copyText = "Copied!"
+        setTimeout(() => {
+            copyText = "Copy link"
+        }, 2000)
+    }
+    const exitPreviewMode = () => {
+        window.history.pushState("", document.title, window.location.pathname);
+        $previewMode = false;
+        $travelSpeed = getItem("travelSpeed", 4);
+        $spinSpeed = getItem("spinSpeed", 2);
+        $emblemSrc = getItem("emblemSrc", defaultEmblem);
+        $emblemSize = getItem("emblemSize", 320);
+        $bgSrc = getItem("bgSrc", defaultBg);
+        $invertMode = getBool("invertMode", false);
+    }
+    if ($page.url.hash) {
+        $previewMode = true;
+        shareCode = $page.url.hash.substring(1);
         loadShareCode();
     }
 </script>
@@ -41,6 +79,7 @@
     {#if visible}
     <div transition:fly={{ y: -200, duration: 200 }}>
     <div class="bg-black/25 lg:bg-black/50 lg:rounded-br-2xl px-2 py-2 flex flex-col lg:flex-row w-screen lg:w-auto items-center lg:items-start">
+        {#if !$previewMode}
         <div class="flex flex-col">
             <div class="flex flex-col px-2 py-2 text-white">
                 <p>Travel Speed</p>
@@ -107,17 +146,33 @@
         <div class="flex flex-col">
             <div class="flex flex-col px-2 py-2 text-white items-center">
                 <p>Share Code</p>
-                <input class="font-mono bg-black/25 py-1 w-32" type=text bind:value={shareCode}>
-                <div class="flex flex-row">
-                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1" on:click={generateShareCode}>
+                <input class="font-mono bg-black/25 py-1 w-full" type=text bind:value={shareCode}>
+                <div class="flex flex-row w-full">
+                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 w-2/3" on:click={generateShareCode}>
                         <p>Generate</p>
                     </button>
-                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1" on:click={loadShareCode}>
+                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 w-1/3" on:click={loadShareCode}>
                         <p>Load</p>
+                    </button>
+                </div>
+                <div class="flex flex-row w-full">
+                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 w-2/3" on:click={previewShareCode}>
+                        <p>Preview</p>
+                    </button>
+                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-2/3" on:click={copyShareCode} disabled={(shareCode==="None"||shareCode==="Error!")}>
+                        <p>{copyText}</p>
                     </button>
                 </div>
             </div>
         </div>
+        {:else}
+        <div class="flex flex-col text-white">
+            <p>You are currently previewing share code {shareCode}.</p>
+            <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-full" on:click={exitPreviewMode}>
+                <p>Exit preview mode</p>
+            </button>
+        </div>
+        {/if}
     </div>
     <button class="w-10 h-10 py-1 px-2 bg-black/50 {visible?"opacity-100 hover:bg-black":"opacity-20"} hover:opacity-100 rounded-br-2xl" on:click={()=>visible=false}>
         <Fa icon={faAngleUp} size="2x" class="text-white"/>

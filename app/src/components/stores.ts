@@ -24,34 +24,39 @@ export const emblemSrc = getItem("emblemSrc", defaultEmblem);
 export const emblemSize = getItem("emblemSize", 320);
 export const bgSrc = getItem("bgSrc", defaultBg);
 export const invertMode = getBool("invertMode", false);
+export const previewMode = writable(false);
+let previewModeValue = false;
 
+previewMode.subscribe(value => {
+    previewModeValue = value;
+})
 travelSpeed.subscribe(value => {
-    if (browser) {
+    if (browser && !previewModeValue) {
         localStorage.setItem('travelSpeed', value.toString())
     }
 })
 spinSpeed.subscribe(value => {
-    if (browser) {
+    if (browser && !previewModeValue) {
         localStorage.setItem('spinSpeed', value.toString())
     }
 })
 emblemSrc.subscribe(value => {
-    if (browser) {
+    if (browser && !previewModeValue) {
         localStorage.setItem('emblemSrc', value.toString())
     }
 })
 emblemSize.subscribe(value => {
-    if (browser) {
+    if (browser && !previewModeValue) {
         localStorage.setItem('emblemSize', value.toString())
     }
 })
 bgSrc.subscribe(value => {
-    if (browser) {
+    if (browser && !previewModeValue) {
         localStorage.setItem('bgSrc', value.toString())
     }
 })
 invertMode.subscribe(value => {
-    if (browser) {
+    if (browser && !previewModeValue) {
         localStorage.setItem('invertMode', value.toString())
     }
 })
