@@ -189,18 +189,18 @@
                 <p>Share Code</p>
                 <input class="font-mono bg-black/25 py-1 w-full" type=text bind:value={shareCode} on:keyup={debounceValidity}>
                 <div class="flex flex-row w-full">
-                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 w-2/3" on:click={generateShareCode}>
+                    <button class="bg-white/10 hover:bg-white/25 rounded-tl border text-white px-2 py-1 w-2/3" on:click={generateShareCode}>
                         <p>Generate</p>
                     </button>
-                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-2/3" on:click={copyShareCode} disabled={!shareCodeValid}>
+                    <button class="bg-white/10 hover:bg-white/25 rounded-tr border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-2/3" on:click={copyShareCode} disabled={!shareCodeValid}>
                         <p>{copyText}</p>
                     </button>
                 </div>
                 <div class="flex flex-row w-full">
-                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-2/3" on:click={previewShareCode} disabled={!shareCodeValid}>
+                    <button class="bg-white/10 hover:bg-white/25 rounded-bl border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-2/3" on:click={previewShareCode} disabled={!shareCodeValid}>
                         <p>Preview</p>
                     </button>
-                    <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-1/3" on:click={loadShareCode} disabled={!shareCodeValid}>
+                    <button class="bg-white/10 hover:bg-white/25 rounded-br border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-1/3" on:click={loadShareCode} disabled={!shareCodeValid}>
                         <p>Load</p>
                     </button>
                 </div>
