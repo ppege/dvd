@@ -187,7 +187,7 @@
         <div class="flex flex-col">
             <div class="flex flex-col px-2 py-2 text-white items-center">
                 <p>Share Code</p>
-                <input class="font-mono bg-black/25 py-1 w-full" type=text bind:value={shareCode} on:keyup={debounceValidity} on:change={debounceValidity}>
+                <input class="font-mono bg-black/25 py-1 w-full" type=text bind:value={shareCode} on:keyup={debounceValidity}>
                 <div class="flex flex-row w-full">
                     <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 w-2/3" on:click={generateShareCode}>
                         <p>Generate</p>
