@@ -24,21 +24,21 @@
     let visible = false;
     let shareCode: string = "";
     const generateShareCode = () => {
+        shareCodeValid = false;
         axios.get(`https://api.nangurepo.com/v2/dvd?data=${JSON.stringify(localStorage)}`)
         .then((response) => {
-            shareCode = response.data
+            if (typeof response.data !== 'object') {
+                shareCode = response.data;
+                shareCodeValid = true;
+            }
         })
         .catch(() => {
             shareCode = "Error!"
         })
-        checkValidity();
     }
     const loadShareCode = () => {
         axios.get(`https://api.nangurepo.com/v2/dvd?code=${shareCode}`)
         .then((response) => {
-            if ("errors" in response.data) {
-                throw(response.data.errors[0])
-            }
             $travelSpeed = response.data.travelSpeed || 4
             $spinSpeed = response.data.spinSpeed || 3
             $emblemSrc = response.data.emblemSrc || defaultEmblem
@@ -64,6 +64,7 @@
     }
     const exitPreviewMode = () => {
         window.history.pushState("", document.title, window.location.pathname);
+        shareCodeValid = true;
         $previewMode = false;
         $travelSpeed = getItem("travelSpeed", 4);
         $spinSpeed = getItem("spinSpeed", 2);
@@ -72,29 +73,46 @@
         $bgSrc = getItem("bgSrc", defaultBg);
         $invertMode = getBool("invertMode", false);
     }
-    if ($page.url.hash) {
-        $previewMode = true;
-        shareCode = $page.url.hash.substring(1);
-        loadShareCode();
-    }
     let shareCodeValid = false;
-	let timer: any;
-    const checkValidity = () => {
+	let timer: NodeJS.Timeout;
+    const debounceValidity = () => {
         shareCodeValid = false;
         clearTimeout(timer);
         timer = setTimeout(() => {
-            axios.get(`https://api.nangurepo.com/v2/dvd?code=${shareCode}`)
-            .then((response) => {
-                if ("errors" in response.data) {
-                    shareCodeValid = false;
-                    return;
-                }
+            checkValidity()
+            .then(() => {
                 shareCodeValid = true;
             })
             .catch(() => {
                 shareCodeValid = false;
+            });
+        }, 750);
+    }
+    const checkValidity = () => {
+        return new Promise((resolve, reject) => {
+            axios.get(`https://api.nangurepo.com/v2/dvd?code=${shareCode}`)
+            .then((response) => {
+                if ("errors" in response.data) {
+                    reject();
+                }
+                resolve(true);
             })
-		}, 750);
+            .catch(() => {
+                reject();
+            })
+        })
+    }
+    if ($page.url.hash) {
+        shareCode = $page.url.hash.substring(1);
+        checkValidity()
+        .then(() => {
+            $previewMode = true;
+            loadShareCode();
+        })
+        .catch(() => {
+            shareCode = "Error!";
+            window.history.pushState("", document.title, window.location.pathname);
+        })
     }
 </script>
 
@@ -169,7 +187,7 @@
         <div class="flex flex-col">
             <div class="flex flex-col px-2 py-2 text-white items-center">
                 <p>Share Code</p>
-                <input class="font-mono bg-black/25 py-1 w-full" type=text bind:value={shareCode} on:keyup={checkValidity} on:change={checkValidity}>
+                <input class="font-mono bg-black/25 py-1 w-full" type=text bind:value={shareCode} on:keyup={debounceValidity} on:change={debounceValidity}>
                 <div class="flex flex-row w-full">
                     <button class="bg-white/10 hover:bg-white/25 rounded border text-white px-2 py-1 w-2/3" on:click={generateShareCode}>
                         <p>Generate</p>
