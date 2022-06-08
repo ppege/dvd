@@ -110,17 +110,13 @@
             "developed",
             "produced",
             "forged",
-            "brought into existence"
+            "brought into existence",
+            "materialized",
+            "constructed",
+            "invented"
         ]
-        const prepositions = [
-            "using",
-            "with",
-            "at"
-        ]
-        const emojis = [
-            "💯",
-            "🐐"
-        ]
+        const prepositions = ["using", "with", "at"]
+        const emojis = ["💯", "🐐"]
         const prefix = verbs[Math.floor(Math.random()*verbs.length)] + " " + prepositions[Math.floor(Math.random()*prepositions.length)];
         return prefix + " dvd.nangurepo.com " + emojis[Math.floor(Math.random()*emojis.length)]
     }

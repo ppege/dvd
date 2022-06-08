@@ -10,10 +10,13 @@
     import Spin from "../components/Spin.svelte"
     import Settings from "../components/Settings.svelte"
     import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, invertMode } from '../components/stores'
+    import Notifications from 'svelte-notifications'
 </script>
-<div class="flex">
-    <div class="-z-50">
-        <Spin bgSrc={$bgSrc} emblemSrc={$emblemSrc} emblemSize={$emblemSize} spinSpeed={$spinSpeed} speed={$travelSpeed} invertMode={$invertMode}/>
+<Notifications>
+    <div class="flex">
+        <div class="-z-50">
+            <Spin bgSrc={$bgSrc} emblemSrc={$emblemSrc} emblemSize={$emblemSize} spinSpeed={$spinSpeed} speed={$travelSpeed} invertMode={$invertMode}/>
+        </div>
+        <Settings/>
     </div>
-    <Settings/>
-</div>
+</Notifications>

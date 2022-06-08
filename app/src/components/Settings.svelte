@@ -7,6 +7,25 @@
     import { fly } from 'svelte/transition'
     import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, invertMode, previewMode } from '../components/stores'
     import { page } from '$app/stores'
+    import { getNotificationsContext } from 'svelte-notifications';
+
+    const { addNotification } = getNotificationsContext();
+    const notifyError = (args: any = {}) => {
+        addNotification({
+            text: args.message || 'An error occurred',
+            position: args.position || 'top-right',
+            type: args.type || 'danger',
+            removeAfter: args.removeAfter || '20000'
+        })
+    }
+    const notifySuccess = (args: any = {}) => {
+        addNotification({
+            text: args.message || 'Success!',
+            position: args.position || 'top-right',
+            type: args.type || 'success',
+            removeAfter: args.removeAfter || '2000'
+        })
+    }
     const getItem = (item: string, fallback: string|number) => {
         try {
             return localStorage.getItem(item) || fallback;
@@ -25,15 +44,21 @@
     let shareCode: string = "";
     const generateShareCode = () => {
         shareCodeValid = false;
-        axios.get(`https://api.nangurepo.com/v2/dvd?data=${JSON.stringify(localStorage)}`)
-        .then((response) => {
-            if (typeof response.data !== 'object') {
-                shareCode = response.data;
+        axios.post(`https://api.nangurepo.com/v2/postData`, localStorage)
+        .then((response: any) => {
+            if (!response.data.error) {
+                shareCode = response.data.code;
                 shareCodeValid = true;
+                notifySuccess({message: 'Share code generated!'});
+            } else {
+                notifyError({message: `Error: ${response.errors}`});
+                if (response.errors[0] === 'Please provide valid JSON') {
+                    notifyError({message: "Tip: your URLs may include some bad characters like quotes or semicolons.", type: 'warning'})
+                }
             }
         })
         .catch(() => {
-            shareCode = "Error!"
+            notifyError("Error: couldn't generate share code");
         })
     }
     const loadShareCode = () => {
@@ -45,22 +70,22 @@
             $emblemSize = response.data.emblemSize || "320"
             $bgSrc = response.data.bgSrc || defaultBg
             $invertMode = response.data.invertMode || false
+            if (!$previewMode) {
+                notifySuccess({message: 'Share code loaded!'});
+            }
         })
         .catch(() => {
-            shareCode = "Error!"
+            notifyError("Error: couldn't load share code");
         })
     }
     const previewShareCode = () => {
         $previewMode = true;
         loadShareCode();
+        notifySuccess({message: `Now previewing share code ${shareCode}`});
     }
-    let copyText = "Copy link";
     const copyShareCode = () => {
         navigator.clipboard.writeText("https://dvd.nangurepo.com/#" + shareCode);
-        copyText = "Copied!"
-        setTimeout(() => {
-            copyText = "Copy link"
-        }, 2000)
+        notifySuccess({message: 'Link copied!'})
     }
     const exitPreviewMode = () => {
         window.history.pushState("", document.title, window.location.pathname);
@@ -72,6 +97,7 @@
         $emblemSize = getItem("emblemSize", 320);
         $bgSrc = getItem("bgSrc", defaultBg);
         $invertMode = getBool("invertMode", false);
+        notifySuccess({message: 'Exited preview mode'});
     }
     let shareCodeValid = false;
 	let timer: NodeJS.Timeout;
@@ -92,7 +118,7 @@
         return new Promise((resolve, reject) => {
             axios.get(`https://api.nangurepo.com/v2/dvd?code=${shareCode}`)
             .then((response) => {
-                if ("errors" in response.data) {
+                if (response.data.error) {
                     reject();
                 }
                 resolve(true);
@@ -106,11 +132,10 @@
         shareCode = $page.url.hash.substring(1);
         checkValidity()
         .then(() => {
-            $previewMode = true;
-            loadShareCode();
+            previewShareCode();
         })
         .catch(() => {
-            shareCode = "Error!";
+            notifyError({message: `Error: couldn't preview share code ${shareCode}`});
             window.history.pushState("", document.title, window.location.pathname);
         })
     }
@@ -193,7 +218,7 @@
                         <p>Generate</p>
                     </button>
                     <button class="bg-white/10 hover:bg-white/25 rounded-tr border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-2/3" on:click={copyShareCode} disabled={!shareCodeValid}>
-                        <p>{copyText}</p>
+                        <p>Copy link</p>
                     </button>
                 </div>
                 <div class="flex flex-row w-full">
