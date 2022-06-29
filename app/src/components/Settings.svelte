@@ -1,13 +1,16 @@
 <script lang="ts">
-    import { browser, mode } from '$app/env';
+    import { browser } from '$app/env';
     import axios from 'axios';
     import Fa from 'svelte-fa/src/fa.svelte'
     import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
     import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
     import { fly } from 'svelte/transition'
-    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, invertMode, previewMode } from '../components/stores'
+    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, selected, previewMode } from '../components/stores'
     import { page } from '$app/stores'
-    import { getNotificationsContext } from 'svelte-notifications';
+    import { getNotificationsContext } from 'svelte-notifications'
+    import * as Storage from "ts-storage"
+
+    let choices = ['Flip', 'Invert', 'Randomize'];
 
     const { addNotification } = getNotificationsContext();
     const notifyError = (args: any = {}) => {
@@ -26,22 +29,16 @@
             removeAfter: args.removeAfter || '2000'
         })
     }
-    const getItem = (item: string, fallback: string|number) => {
-        try {
-            return localStorage.getItem(item) || fallback;
-        } catch {
-            return fallback;
-        }
-    }
-    const getBool = (item: string, fallback: boolean) => {
-        try {
-            return (localStorage.getItem(item) === 'true') || fallback;
-        } catch {
-            return fallback;
-        }
-    }
     let visible = false;
     let shareCode: string = "";
+    const reFetchSettings = () => {
+        $travelSpeed = Storage.get("travelSpeed", 4).value;
+        $spinSpeed = Storage.get("spinSpeed", 3).value;
+        $emblemSrc = Storage.get("emblemSrc", defaultEmblem).value;
+        $emblemSize = Storage.get("emblemSize", 320).value;
+        $bgSrc = Storage.get("bgSrc", defaultBg).value;
+        $selected = Storage.get("onCollision", []).value;
+    }
     const generateShareCode = () => {
         shareCodeValid = false;
         axios.post(`https://api.nangurepo.com/v2/postData`, localStorage)
@@ -69,7 +66,7 @@
             $emblemSrc = response.data.emblemSrc || defaultEmblem
             $emblemSize = response.data.emblemSize || "320"
             $bgSrc = response.data.bgSrc || defaultBg
-            $invertMode = response.data.invertMode || false
+            $selected = response.data.onCollision || []
             if (!$previewMode) {
                 notifySuccess({message: 'Share code loaded!'});
             }
@@ -91,12 +88,7 @@
         window.history.pushState("", document.title, window.location.pathname);
         shareCodeValid = true;
         $previewMode = false;
-        $travelSpeed = getItem("travelSpeed", 4);
-        $spinSpeed = getItem("spinSpeed", 2);
-        $emblemSrc = getItem("emblemSrc", defaultEmblem);
-        $emblemSize = getItem("emblemSize", 320);
-        $bgSrc = getItem("bgSrc", defaultBg);
-        $invertMode = getBool("invertMode", false);
+        reFetchSettings();
         notifySuccess({message: 'Exited preview mode'});
     }
     let shareCodeValid = false;
@@ -168,10 +160,6 @@
                     <input type=range bind:value={$emblemSize} min=128 max=1024>
                 </div>
             </div>
-            <div class="flex flex-row px-2 py-2 text-white items-center">
-                <input type=checkbox bind:checked={$invertMode} class="mr-2">
-                <p>Invert Mode</p>
-            </div>
         </div>
         <div class="flex flex-col">
             <div class="flex flex-col px-2 py-2 text-white items-center">
@@ -182,7 +170,23 @@
                 <p>Background URL</p>
                 <input class="font-mono bg-black/25 py-1 text-xs w-64 select-all" type=text bind:value={$bgSrc}>
             </div>
-            <div class="flex flex-row items-center px-2">
+            <div class="flex flex-col text-white items-center">
+                <p>On collision</p>
+                <div class="flex flex-row w-full">
+                    {#each choices as item}
+                        {#if !$selected.includes(item)}
+                        <button class="bg-white/10 hover:bg-white/25 border text-white w-full px-2 py-1" on:click={() => {
+                            $selected = [...$selected, item]
+                        }}>{item}</button>
+                        {:else}
+                        <button class="bg-white/90 hover:bg-white border border-black text-black w-full px-2 py-1" on:click={() => {
+                            $selected = [...$selected].filter(i => i !== item)
+                        }}>{item}</button>
+                        {/if}
+                    {/each}
+                </div>
+            </div>
+            <div class="flex flex-row items-center px-2 mt-1">
                 <button class="bg-white/10 hover:bg-white/25 rounded-l border text-white w-32 px-2 py-1" on:click={()=>{
                     $emblemSrc = defaultEmblem;
                     $bgSrc = defaultBg;
@@ -193,7 +197,7 @@
                     $travelSpeed = 4;
                     $spinSpeed = 3;
                     $emblemSize = 320;
-                    $invertMode = false;
+                    $selected = [];
                 }}>
                     <p>Reset Settings</p>
                 </button>
@@ -204,7 +208,7 @@
                 $travelSpeed = 4;
                 $spinSpeed = 3;
                 $emblemSize = 320;
-                $invertMode = false;
+                $selected = [];
             }}>
                 <p>Reset All</p>
             </button>

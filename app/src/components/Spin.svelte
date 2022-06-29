@@ -1,13 +1,15 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { browser } from '$app/env';
+    import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
 
-    export let speed: any;
+    export let travelSpeed: any;
     export let spinSpeed: any;
     export let emblemSize: any;
     export let emblemSrc: any;
     export let bgSrc: any;
-    export let invertMode: any;
+    export let selected: any;
 
     let y = 1
     let x = 1
@@ -57,16 +59,16 @@
 
         //Setting up the speed and direction of X axis
         if(directionX){
-            x = x + 1 * speed 
+            x = x + 1 * travelSpeed 
         }else{
-            x = x + 1 * speed * (-1)
+            x = x + 1 * travelSpeed * (-1)
         }
 
         //Setting up the speed and direction of Y axis
         if(directionY){
-            y = y + 1 * speed
+            y = y + 1 * travelSpeed
         }else{
-            y = y + 1 * speed * (-1)
+            y = y + 1 * travelSpeed * (-1)
         }
 
         //Setting up logo position on the axis
@@ -84,16 +86,16 @@
                 directionX = !directionX
                 break;
             }
-        if (invertMode) {
-            if (collisionIndex % 2 === 0) {
-                dvd.style.filter = "invert(100%)";
-            } else {
-                dvd.style.filter = "invert(0%)";
-            }
-            collisionIndex++;
-        } else {
-            dvd.style.filter = "invert(0%)";
+        dvd.style.filter = "invert(0%)";
+        dvd.style.transform = "scaleX(1)";
+        if (selected.includes("Invert") && collisionIndex % 2 === 0) {
+            dvd.style.filter = "invert(100%)";
         }
+        if (selected.includes("Flip") && collisionIndex % 2 === 0) {
+            dvd.style.transform = "scaleX(-1)";
+        }
+        collisionIndex++;
+        dispatch('message');
     }
     const getSpinSpeed = (speed: number, size: number) => {
         let s = speed == 0 ? "0":((1/speed)*10)

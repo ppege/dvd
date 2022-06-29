@@ -1,30 +1,37 @@
 import { writable } from 'svelte/store'
 import { browser } from '$app/env';
 
-const getItem = (item: string, fallback: string|number) => {
+const getString = (item: string, fallback: string): string => {
     try {
-        return writable(localStorage.getItem(item) || fallback);
+        return localStorage.getItem(item) || fallback;
     } catch {
-        return writable(fallback);
+        return fallback;
     }
 }
-const getBool = (item: string, fallback: boolean) => {
+const getNumber = (item: string, fallback: string): number => {
     try {
-        return writable((localStorage.getItem(item) === 'true') || fallback);
+        return parseInt(localStorage.getItem(item) || fallback);
     } catch {
-        return writable(fallback);
+        return parseInt(fallback);
+    }
+}
+const getArray = (item: string): string[] => {
+    try {
+        return JSON.parse(localStorage.getItem(item) || "[]");
+    } catch {
+        return [];
     }
 }
 
 export const defaultEmblem = browser?"/emblem.png":"https://color-hex.org/colors/ffffff.png";
 export const defaultBg = browser?"/bg.png":"https://color-hex.org/colors/ffffff.png";
-export const travelSpeed = getItem("travelSpeed", 4);
-export const spinSpeed = getItem("spinSpeed", 2);
-export const emblemSrc = getItem("emblemSrc", defaultEmblem);
-export const emblemSize = getItem("emblemSize", 320);
-export const bgSrc = getItem("bgSrc", defaultBg);
-export const invertMode = getBool("invertMode", false);
+export const travelSpeed = writable(getNumber("travelSpeed", "4"));
+export const spinSpeed = writable(getNumber("spinSpeed", "3"));
+export const emblemSize = writable(getNumber("emblemSize", "320"));
+export const emblemSrc = writable(getString("emblemSrc", defaultEmblem));
+export const bgSrc = writable(getString("bgSrc", defaultBg));
 export const previewMode = writable(false);
+export const selected = writable(getArray("onCollision"));
 let previewModeValue = false;
 
 previewMode.subscribe(value => {
@@ -32,31 +39,31 @@ previewMode.subscribe(value => {
 })
 travelSpeed.subscribe(value => {
     if (browser && !previewModeValue) {
-        localStorage.setItem('travelSpeed', value.toString())
+        localStorage.setItem("travelSpeed", value.toString())
     }
 })
 spinSpeed.subscribe(value => {
     if (browser && !previewModeValue) {
-        localStorage.setItem('spinSpeed', value.toString())
+        localStorage.setItem("spinSpeed", value.toString())
     }
 })
 emblemSrc.subscribe(value => {
     if (browser && !previewModeValue) {
-        localStorage.setItem('emblemSrc', value.toString())
+        localStorage.setItem("emblemSrc", value)
     }
 })
 emblemSize.subscribe(value => {
     if (browser && !previewModeValue) {
-        localStorage.setItem('emblemSize', value.toString())
+        localStorage.setItem("emblemSize", value.toString())
     }
 })
 bgSrc.subscribe(value => {
     if (browser && !previewModeValue) {
-        localStorage.setItem('bgSrc', value.toString())
+        localStorage.setItem("bgSrc", value)
     }
 })
-invertMode.subscribe(value => {
+selected.subscribe(value => {
     if (browser && !previewModeValue) {
-        localStorage.setItem('invertMode', value.toString())
+        localStorage.setItem("onCollision", JSON.stringify(value))
     }
 })
