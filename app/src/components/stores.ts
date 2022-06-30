@@ -17,16 +17,16 @@ const getNumber = (item: string, fallback: string): number => {
 }
 const getArray = (item: string): string[] => {
     try {
-        return JSON.parse(localStorage.getItem(item) || "[]");
+        return JSON.parse(localStorage.getItem(item) || "['Invert']");
     } catch {
-        return [];
+        return ['Invert'];
     }
 }
 
 export const defaultEmblem = browser?"/emblem.png":"https://color-hex.org/colors/ffffff.png";
 export const defaultBg = browser?"/bg.png":"https://color-hex.org/colors/ffffff.png";
-export const travelSpeed = writable(getNumber("travelSpeed", "4"));
-export const spinSpeed = writable(getNumber("spinSpeed", "3"));
+export const travelSpeed = writable(getNumber("travelSpeed", "2"));
+export const spinSpeed = writable(getNumber("spinSpeed", "0"));
 export const emblemSize = writable(getNumber("emblemSize", "320"));
 export const emblemSrc = writable(getString("emblemSrc", defaultEmblem));
 export const bgSrc = writable(getString("bgSrc", defaultBg));
