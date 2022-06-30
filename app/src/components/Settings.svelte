@@ -32,12 +32,12 @@
     let visible = false;
     let shareCode: string = "";
     const reFetchSettings = () => {
-        $travelSpeed = Storage.get("travelSpeed", 4).value;
-        $spinSpeed = Storage.get("spinSpeed", 3).value;
+        $travelSpeed = Storage.get("travelSpeed", 3).value;
+        $spinSpeed = Storage.get("spinSpeed", 0).value;
         $emblemSrc = Storage.get("emblemSrc", defaultEmblem).value;
         $emblemSize = Storage.get("emblemSize", 320).value;
         $bgSrc = Storage.get("bgSrc", defaultBg).value;
-        $selected = Storage.get("onCollision", []).value;
+        $selected = Storage.get("onCollision", ['Invert']).value;
     }
     const generateShareCode = () => {
         shareCodeValid = false;
@@ -136,7 +136,7 @@
 <div class="flex flex-col">
     {#if visible}
     <div transition:fly={{ y: -200, duration: 200 }}>
-    <div class="bg-black/25 md:bg-black/50 md:rounded-br-2xl px-2 py-2 flex flex-col md:flex-row w-screen md:w-auto items-center md:items-start">
+    <div class="bg-black/25 md:bg-slate-800/60 md:rounded-br-2xl px-2 py-2 flex flex-col md:flex-row w-screen md:w-auto items-center md:items-start">
         {#if !$previewMode}
         <div class="flex flex-col">
             <div class="flex flex-col px-2 py-2 text-white">
@@ -194,10 +194,10 @@
                     <p>Reset Images</p>
                 </button>
                 <button class="bg-white/10 hover:bg-white/25 rounded-r border text-white w-32 px-2 py-1" on:click={()=>{
-                    $travelSpeed = 4;
-                    $spinSpeed = 3;
+                    $travelSpeed = 2;
+                    $spinSpeed = 0;
                     $emblemSize = 320;
-                    $selected = [];
+                    $selected = ['Invert'];
                 }}>
                     <p>Reset Settings</p>
                 </button>
@@ -205,10 +205,10 @@
             <button class="bg-white/10 hover:bg-white/25 rounded-b border-b border-r border-l text-white w-32 px-2 py-1 self-center" on:click={()=>{
                 $emblemSrc = defaultEmblem;
                 $bgSrc = defaultBg;
-                $travelSpeed = 4;
-                $spinSpeed = 3;
+                $travelSpeed = 2;
+                $spinSpeed = 0;
                 $emblemSize = 320;
-                $selected = [];
+                $selected = ['Invert'];
             }}>
                 <p>Reset All</p>
             </button>
