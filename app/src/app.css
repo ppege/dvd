@@ -12,7 +12,7 @@
   .number-input {
     @apply font-mono rounded w-8 text-center mr-2
   }
-  .url-input {
+  .text-input {
     @apply font-mono py-1 px-1 select-all rounded
   }
 }
