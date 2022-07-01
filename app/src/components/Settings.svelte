@@ -5,7 +5,7 @@
     import { faAngleDown } from '@fortawesome/free-solid-svg-icons/faAngleDown'
     import { faAngleUp } from '@fortawesome/free-solid-svg-icons/faAngleUp'
     import { fly } from 'svelte/transition'
-    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, selected, previewMode } from '../components/stores'
+    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, defaultEmblem, defaultBg, selected, presets, previewMode } from '../components/stores'
     import { page } from '$app/stores'
     import { getNotificationsContext } from 'svelte-notifications'
     import * as Storage from "ts-storage"
@@ -29,7 +29,7 @@
             removeAfter: args.removeAfter || '2000'
         })
     }
-    let visible = false;
+    let visible = true;
     let shareCode: string = "";
     const reFetchSettings = () => {
         $travelSpeed = Storage.get("travelSpeed", 3).value;
@@ -120,6 +120,44 @@
             })
         })
     }
+    const handlePresetChange = () => {
+        const preset = $presets.presets[$presets.selected]
+        $travelSpeed = preset.travelSpeed;
+        $spinSpeed = preset.spinSpeed;
+        $emblemSrc = preset.emblemSrc;
+        $emblemSize = preset.emblemSize;
+        $bgSrc = preset.bgSrc;
+        $selected = preset.onCollision;
+        notifySuccess({message: `Preset '${preset.name}' loaded`});
+    }
+    const savePreset = () => {
+        let name = prompt('Name')
+        if (!name) {return}
+        if ($presets.options.includes(name) && !confirm("A preset with this name already exists. Overwrite?")) {
+            return;
+        }
+        if (!$presets.options.includes(name)) {
+            $presets.options = [...$presets.options, name]
+        }
+        $presets.selected = name
+        $presets.presets[name] = {
+            name: name,
+            travelSpeed: $travelSpeed,
+            spinSpeed: $spinSpeed,
+            emblemSize: $emblemSize,
+            selected: $selected,
+            emblemSrc: $emblemSrc,
+            bgSrc: $bgSrc,
+            onCollision: $selected
+        }
+        $presets.presets = $presets.presets;
+    }
+    const deletePreset = () => {
+        if (confirm(`Are you sure you want to delete '${$presets.selected}'?`)) {
+            $presets.options = [...$presets.options].filter(i => i !== $presets.selected)
+            delete $presets.presets[$presets.selected]
+        }
+    }
     if ($page.url.hash) {
         shareCode = $page.url.hash.substring(1);
         checkValidity()
@@ -139,36 +177,36 @@
     <div class="bg-black/25 md:bg-slate-800/60 md:rounded-br-2xl px-2 py-2 flex flex-col md:flex-row w-screen md:w-auto items-center md:items-start">
         {#if !$previewMode}
         <div class="flex flex-col">
-            <div class="flex flex-col px-2 py-2 text-white">
-                <p>Travel Speed</p>
+            <div class="flex flex-col px-2 py-2">
+                <p class="text-white">Travel Speed</p>
                 <div class="flex flex-row">
-                    <input bind:value={$travelSpeed} type=number class="font-mono bg-black/20 rounded w-12 text-center" min=0>
+                    <input bind:value={$travelSpeed} type=number class="number-input" min=0>
                     <input type=range bind:value={$travelSpeed} min=0 max=25>
                 </div>
             </div>
-            <div class="flex flex-col px-2 py-2 text-white">
-                <p>Spin Speed</p>
+            <div class="flex flex-col px-2 py-2">
+                <p class="text-white">Spin Speed</p>
                 <div class="flex flex-row">
-                    <input bind:value={$spinSpeed} type=number class="font-mono bg-black/20 rounded w-12 text-center" min=0>
+                    <input bind:value={$spinSpeed} type=number class="number-input" min=0>
                     <input type=range bind:value={$spinSpeed} min=0 max=25>
                 </div>
             </div>
-            <div class="flex flex-col px-2 py-2 text-white">
-                <p>Emblem Size</p>
+            <div class="flex flex-col px-2 py-2">
+                <p class="text-white">Emblem Size</p>
                 <div class="flex flex-row">
-                    <input bind:value={$emblemSize} type=number class="font-mono bg-black/25 rounded w-12 text-center" min=0>
+                    <input bind:value={$emblemSize} type=number class="number-input" min=0>
                     <input type=range bind:value={$emblemSize} min=128 max=1024>
                 </div>
             </div>
         </div>
         <div class="flex flex-col">
-            <div class="flex flex-col px-2 py-2 text-white items-center">
-                <p>Emblem URL</p>
-                <input class="font-mono bg-black/25 py-1 text-xs w-64 select-all" type=text bind:value={$emblemSrc}>
+            <div class="flex flex-col px-2 py-2 items-center">
+                <p class="text-white">Emblem URL</p>
+                <input class="text-input text-xs w-64" type=text bind:value={$emblemSrc}>
             </div>
-            <div class="flex flex-col px-2 py-2 text-white items-center">
-                <p>Background URL</p>
-                <input class="font-mono bg-black/25 py-1 text-xs w-64 select-all" type=text bind:value={$bgSrc}>
+            <div class="flex flex-col px-2 py-2 items-center">
+                <p class="text-white">Background URL</p>
+                <input class="text-input text-xs w-64" type=text bind:value={$bgSrc}>
             </div>
             <div class="flex flex-col text-white items-center">
                 <p>On collision</p>
@@ -179,7 +217,7 @@
                             $selected = [...$selected, item]
                         }}>{item}</button>
                         {:else}
-                        <button class="bg-white/90 hover:bg-white border border-black text-black w-full px-2 py-1" on:click={() => {
+                        <button class="bg-white/90 hover:bg-white border border-slate-200 text-black w-full px-2 py-1" on:click={() => {
                             $selected = [...$selected].filter(i => i !== item)
                         }}>{item}</button>
                         {/if}
@@ -213,10 +251,10 @@
                 <p>Reset All</p>
             </button>
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col w-auto">
             <div class="flex flex-col px-2 py-2 text-white items-center">
                 <p>Share Code</p>
-                <input class="font-mono bg-black/25 py-1 w-full" type=text bind:value={shareCode} on:keyup={debounceValidity}>
+                <input class="text-input w-full text-black" type=text bind:value={shareCode} on:keyup={debounceValidity}>
                 <div class="flex flex-row w-full mt-1">
                     <button class="bg-white/10 hover:bg-white/25 rounded-tl border text-white px-2 py-1 w-2/3" on:click={generateShareCode}>
                         <p>Generate</p>
@@ -232,6 +270,18 @@
                     <button class="bg-white/10 hover:bg-white/25 rounded-br border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-1/3" on:click={loadShareCode} disabled={!shareCodeValid}>
                         <p>Load</p>
                     </button>
+                </div>
+            </div>
+            <div class="flex flex-col px-2 py-2 items-center">
+                <p class="text-white">Presets</p>
+                <select class="text-input font-sans w-full" bind:value={$presets.selected} on:change={handlePresetChange}>
+                    {#each $presets.options as preset}
+                        <option value={preset}>{preset}</option>
+                    {/each}
+                </select>
+                <div class="flex flex-row w-auto">
+                    <button class="bg-white/10 hover:bg-white/25 border text-white px-2 py-1" on:click={savePreset}>Save Preset</button>
+                    <button class="bg-white/10 hover:bg-white/25 border text-white px-2 py-1" on:click={deletePreset}>Delete Preset</button>
                 </div>
             </div>
         </div>
