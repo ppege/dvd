@@ -3,13 +3,13 @@
 </script>
 
 <svelte:head>
-    <title>DVD player</title>
+    <title>{$presets.selected}</title>
 </svelte:head>
 
 <script lang="ts">
     import Spin from "../components/Spin.svelte"
     import Settings from "../components/Settings.svelte"
-    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, selected } from '../components/stores'
+    import { travelSpeed, spinSpeed, emblemSrc, emblemSize, bgSrc, selected, presets } from '../components/stores'
     import Notifications from 'svelte-notifications'
 
     const handleMessage = () => {

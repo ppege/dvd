@@ -128,7 +128,35 @@
         $emblemSize = preset.emblemSize;
         $bgSrc = preset.bgSrc;
         $selected = preset.onCollision;
-        notifySuccess({message: `Loaded preset ${preset.name}`});
+        notifySuccess({message: `Preset '${preset.name}' loaded`});
+    }
+    const savePreset = () => {
+        let name = prompt('Name')
+        if (!name) {return}
+        if ($presets.options.includes(name) && !confirm("A preset with this name already exists. Overwrite?")) {
+            return;
+        }
+        if (!$presets.options.includes(name)) {
+            $presets.options = [...$presets.options, name]
+        }
+        $presets.selected = name
+        $presets.presets[name] = {
+            name: name,
+            travelSpeed: $travelSpeed,
+            spinSpeed: $spinSpeed,
+            emblemSize: $emblemSize,
+            selected: $selected,
+            emblemSrc: $emblemSrc,
+            bgSrc: $bgSrc,
+            onCollision: $selected
+        }
+        $presets.presets = $presets.presets;
+    }
+    const deletePreset = () => {
+        if (confirm(`Are you sure you want to delete '${$presets.selected}'?`)) {
+            $presets.options = [...$presets.options].filter(i => i !== $presets.selected)
+            delete $presets.presets[$presets.selected]
+        }
     }
     if ($page.url.hash) {
         shareCode = $page.url.hash.substring(1);
@@ -252,8 +280,8 @@
                     {/each}
                 </select>
                 <div class="flex flex-row w-auto">
-                    <button class="bg-white/10 hover:bg-white/25 border text-white w-full px-2 py-1">Save Preset</button>
-                    <button class="bg-white/10 hover:bg-white/25 border text-white w-full px-2 py-1">Delete Preset</button>
+                    <button class="bg-white/10 hover:bg-white/25 border text-white px-2 py-1" on:click={savePreset}>Save Preset</button>
+                    <button class="bg-white/10 hover:bg-white/25 border text-white px-2 py-1" on:click={deletePreset}>Delete Preset</button>
                 </div>
             </div>
         </div>
