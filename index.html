@@ -4,15 +4,15 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="./favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>DVD player</title>
-		<meta http-equiv="content-security-policy" content=""><title>DVD player</title>
-	<link rel="stylesheet" href="/_app/assets/pages/__layout.svelte-d08ac4d0.css">
+		<title>DVD</title>
+		<meta http-equiv="content-security-policy" content=""><title>DVD Screensaver</title>
+	<link rel="stylesheet" href="/_app/assets/pages/__layout.svelte-acc875c9.css">
 	<link rel="stylesheet" href="/_app/assets/pages/index.svelte-67dc9a1e.css">
-	<link rel="modulepreload" href="/_app/start-2d0eebe0.js">
-	<link rel="modulepreload" href="/_app/chunks/index-cb1a3b41.js">
-	<link rel="modulepreload" href="/_app/chunks/index-280d3039.js">
-	<link rel="modulepreload" href="/_app/pages/__layout.svelte-af8cd498.js">
-	<link rel="modulepreload" href="/_app/pages/index.svelte-962d1bd7.js">
+	<link rel="modulepreload" href="/_app/start-16121c5e.js">
+	<link rel="modulepreload" href="/_app/chunks/index-4937967d.js">
+	<link rel="modulepreload" href="/_app/chunks/index-383b6b27.js">
+	<link rel="modulepreload" href="/_app/pages/__layout.svelte-4be52bf5.js">
+	<link rel="modulepreload" href="/_app/pages/index.svelte-9de44c18.js">
 	</head>
 	<body>
 		<div>
@@ -25,7 +25,35 @@
         
         <div class="animate-spin"></div>
     </div></div>
-        <div class="flex flex-col">
+        <div class="flex flex-col"><div><div class="bg-black/25 md:bg-slate-800/60 md:rounded-br-2xl px-2 py-2 flex flex-col md:flex-row w-screen md:w-auto items-center md:items-start"><div class="flex flex-col"><div class="flex flex-col px-2 py-2"><p class="text-white">Travel Speed</p>
+                <div class="flex flex-row"><input type="number" class="number-input" min="0" value="2">
+                    <input type="range" min="0" max="25" value="2"></div></div>
+            <div class="flex flex-col px-2 py-2"><p class="text-white">Spin Speed</p>
+                <div class="flex flex-row"><input type="number" class="number-input" min="0" value="0">
+                    <input type="range" min="0" max="25" value="0"></div></div>
+            <div class="flex flex-col px-2 py-2"><p class="text-white">Emblem Size</p>
+                <div class="flex flex-row"><input type="number" class="number-input" min="0" value="320">
+                    <input type="range" min="128" max="1024" value="320"></div></div></div>
+        <div class="flex flex-col"><div class="flex flex-col px-2 py-2 items-center"><p class="text-white">Emblem URL</p>
+                <input class="text-input text-xs w-64" type="text" value="https://color-hex.org/colors/ffffff.png"></div>
+            <div class="flex flex-col px-2 py-2 items-center"><p class="text-white">Background URL</p>
+                <input class="text-input text-xs w-64" type="text" value="https://color-hex.org/colors/ffffff.png"></div>
+            <div class="flex flex-col text-white items-center"><p>On collision</p>
+                <div class="flex flex-row w-full"><button class="bg-white/10 hover:bg-white/25 border text-white w-full px-2 py-1">Flip</button><button class="bg-white/90 hover:bg-white border border-slate-200 text-black w-full px-2 py-1">Invert</button><button class="bg-white/10 hover:bg-white/25 border text-white w-full px-2 py-1">Randomize</button></div></div>
+            <div class="flex flex-row items-center px-2 mt-1"><button class="bg-white/10 hover:bg-white/25 rounded-l border text-white w-32 px-2 py-1"><p>Reset Images</p></button>
+                <button class="bg-white/10 hover:bg-white/25 rounded-r border text-white w-32 px-2 py-1"><p>Reset Settings</p></button></div>
+            <button class="bg-white/10 hover:bg-white/25 rounded-b border-b border-r border-l text-white w-32 px-2 py-1 self-center"><p>Reset All</p></button></div>
+        <div class="flex flex-col w-auto"><div class="flex flex-col px-2 py-2 text-white items-center"><p>Share Code</p>
+                <input class="text-input w-full text-black" type="text" value="">
+                <div class="flex flex-row w-full mt-1"><button class="bg-white/10 hover:bg-white/25 rounded-tl border text-white px-2 py-1 w-2/3"><p>Generate</p></button>
+                    <button class="bg-white/10 hover:bg-white/25 rounded-tr border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-2/3" disabled><p>Copy link</p></button></div>
+                <div class="flex flex-row w-full"><button class="bg-white/10 hover:bg-white/25 rounded-bl border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-2/3" disabled><p>Preview</p></button>
+                    <button class="bg-white/10 hover:bg-white/25 rounded-br border text-white px-2 py-1 disabled:bg-black/5 disabled:border-slate-700 disabled:text-slate-300 w-1/3" disabled><p>Load</p></button></div></div>
+            <div class="flex flex-col px-2 py-2 items-center"><p class="text-white">Presets</p>
+                <select class="text-input font-sans w-full"><option value="DVD Screensaver">DVD Screensaver</option><option value="Flag of Spin">Flag of Spin</option></select>
+                <div class="flex flex-row w-auto"><button class="bg-white/10 hover:bg-white/25 border text-white px-2 py-1">Save Preset</button>
+                    <button class="bg-white/10 hover:bg-white/25 border text-white px-2 py-1">Delete Preset</button></div></div></div></div>
+    <button class="w-10 h-10 py-1 px-2 bg-black/50 opacity-100 hover:bg-black hover:opacity-100 rounded-br-2xl"><svg id="" class="text-white svelte-fa svelte-1cj2gr0" style="height:1em;font-size:2em;vertical-align:-.125em;transform-origin:center;overflow:visible" viewBox="0 0 384 512" aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg"><g transform="translate(192 256)" transform-origin="96 0"><g transform="translate(0,0) scale(1,1)"><path d="M352 352c-8.188 0-16.38-3.125-22.62-9.375L192 205.3l-137.4 137.4c-12.5 12.5-32.75 12.5-45.25 0s-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25C368.4 348.9 360.2 352 352 352z" fill="currentColor" transform="translate(-192 -256)"></path></g></g></svg></button></div>
     </div></div>
 <div class="notifications"><div class="position-top-left default-position-style-top-left svelte-t0tmtn">
     </div><div class="position-top-center default-position-style-top-center svelte-t0tmtn">
@@ -36,10 +64,10 @@
     </div></div>
 
 
-		<script type="module" data-sveltekit-hydrate="t49nis">
-		import { start } from "/_app/start-2d0eebe0.js";
+		<script type="module" data-sveltekit-hydrate="1wuaf5b">
+		import { start } from "/_app/start-16121c5e.js";
 		start({
-			target: document.querySelector('[data-sveltekit-hydrate="t49nis"]').parentNode,
+			target: document.querySelector('[data-sveltekit-hydrate="1wuaf5b"]').parentNode,
 			paths: {"base":"","assets":""},
 			session: {},
 			route: true,
@@ -49,8 +77,8 @@
 				status: 200,
 				error: null,
 				nodes: [
-					import("/_app/pages/__layout.svelte-af8cd498.js"),
-						import("/_app/pages/index.svelte-962d1bd7.js")
+					import("/_app/pages/__layout.svelte-4be52bf5.js"),
+						import("/_app/pages/index.svelte-9de44c18.js")
 				],
 				params: {},
 				routeId: ""
