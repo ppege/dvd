@@ -23,6 +23,7 @@ const getJSON = (item: string, fallback: any) => {
     }
 }
 
+export const fullscreenEnabled = writable(false)
 export const defaultEmblem = browser?"/emblem.png":"https://color-hex.org/colors/ffffff.png";
 export const defaultBg = browser?"/bg.png":"https://color-hex.org/colors/ffffff.png";
 export const travelSpeed = writable(getNumber("travelSpeed", "2"));
@@ -57,6 +58,7 @@ export const presets = writable(getJSON("presets", {
     }
 }))
 let previewModeValue = false;
+
 
 previewMode.subscribe(value => {
     previewModeValue = value;

@@ -116,12 +116,11 @@
 			'invented'
 		];
 		const prepositions = ['using', 'with', 'at'];
-		const emojis = ['💯', '🐐'];
 		const prefix =
 			verbs[Math.floor(Math.random() * verbs.length)] +
 			' ' +
 			prepositions[Math.floor(Math.random() * prepositions.length)];
-		return prefix + ' dvd.nangu.dev ' + emojis[Math.floor(Math.random() * emojis.length)];
+		return prefix + ' dvd.nangu.dev';
 	};
 </script>
 
@@ -137,7 +136,7 @@
 	</div>
 	{#if browser}
 		<p
-			class="watermark text-white self-center text-xl md:text-2xl opacity-80 mr-2 mb-2 bg-black/25 px-2 rounded"
+			class="watermark text-white self-center text-xl md:text-2xl opacity-80 mr-2 mb-2 bg-black/25 px-2 rounded hover:cursor-none"
 		>
 			{getWatermark()}
 		</p>
