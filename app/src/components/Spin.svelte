@@ -27,7 +27,7 @@
 
 	let renderBox: any;
 	let dvd: any;
-	let collisionIndex: number = 0;
+	let collisionIndex = 0;
 
 	onMount(() => {
 		//Setting up render event
@@ -120,7 +120,7 @@
 			verbs[Math.floor(Math.random() * verbs.length)] +
 			' ' +
 			prepositions[Math.floor(Math.random() * prepositions.length)];
-		return prefix + ' dvd.nangu.dev';
+		return prefix + ' dvd.toof.rs';
 	};
 </script>
 
