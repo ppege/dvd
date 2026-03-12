@@ -4,8 +4,8 @@
   "scripts": {
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
-    "package": "svelte-kit package",
     "preview": "svelte-kit preview",
+    "package": "svelte-kit package",
     "prepare": "svelte-kit sync",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
@@ -14,8 +14,8 @@
     "deploy": "node ./gh-pages.js"
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "next",
-    "@sveltejs/kit": "next",
+    "@sveltejs/adapter-static": "1.0.0-next.34",
+    "@sveltejs/kit": "1.0.0-next.350",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "eslint": "^8.12.0",
@@ -27,12 +27,15 @@
     "svelte-check": "^2.2.6",
     "svelte-preprocess": "^4.10.1",
     "tslib": "^2.3.1",
-    "typescript": "~4.6.2"
+    "typescript": "~4.6.2",
+    "vite": "^2.9.0"
+  },
+  "overrides": {
+    "@sveltejs/vite-plugin-svelte": "1.0.0-next.45"
   },
   "type": "module",
   "dependencies": {
     "@rgossiaux/svelte-headlessui": "^1.0.2",
-    "@sveltejs/adapter-static": "^1.0.0-next.31",
     "axios": "^0.27.2",
     "gh-pages": "^4.0.0",
     "svelte-fullscreen": "^2.0.0",
